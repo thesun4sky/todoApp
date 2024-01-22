@@ -1,5 +1,8 @@
 package io.thesun4sky.todoapp.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import io.thesun4sky.todoapp.controller.TodoRequestDTO;
@@ -22,5 +25,10 @@ public class TodoService {
 	public Todo getTodo(Long todoId) {
 		return todoRepository.findById(todoId)
 			.orElseThrow(IllegalArgumentException::new);
+	}
+
+	// 할일 전체 조회
+	public List<Todo> getTodos() {
+		return todoRepository.findAll(Sort.by("createdAt").descending());
 	}
 }
