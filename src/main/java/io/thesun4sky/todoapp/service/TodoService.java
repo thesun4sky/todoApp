@@ -35,18 +35,29 @@ public class TodoService {
 
 	// 할일 수정
 	public Todo updateTodo(Long todoId, TodoRequestDTO dto) {
-		Todo todo = getTodo(todoId);
-
-		// 비밀번호 체크
-		if (todo.getPassword() != null
-			&& !Objects.equals(todo.getPassword(), dto.getPassword())) {
-			throw new IllegalArgumentException();
-		}
+		Todo todo = checkPWAndGetTodo(todoId, dto.getPassword());
 
 		todo.setTitle(dto.getTitle());
 		todo.setContent(dto.getContent());
 		todo.setUserName(dto.getUserName());
 
 		return todoRepository.save(todo);
+	}
+
+	private Todo checkPWAndGetTodo(Long todoId, String password) {
+		Todo todo = getTodo(todoId);
+
+		// 비밀번호 체크
+		if (todo.getPassword() != null
+			&& !Objects.equals(todo.getPassword(), password)) {
+			throw new IllegalArgumentException();
+		}
+		return todo;
+	}
+
+	public void deleteTodo(Long todoId, String password) {
+		Todo todo = checkPWAndGetTodo(todoId, password);
+
+		todoRepository.delete(todo);
 	}
 }
